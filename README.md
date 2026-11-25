@@ -16,6 +16,71 @@ no private client data, no setup headaches.
 
 ---
 
+## My internship workspace — local development
+
+This is my personal FlyRank ML Internship workspace. I chose to execute and develop the introductory notebooks locally in **Visual Studio Code on Windows**, rather than Google Colab, using an isolated Python environment managed by **uv**. I use Git and GitHub to version the notebooks and preserve executed outputs.
+
+### Development environment
+
+| Component | Tool |
+|---|---|
+| Editor | VS Code (Python and Jupyter extensions) |
+| Runtime | Python 3.13 |
+| Environment / dependency management | uv, project-local `.venv` |
+| Notebook execution | Jupyter / ipykernel |
+| ML and analysis | scikit-learn, pandas, NumPy, Matplotlib |
+| Warehouse querying | DuckDB (2.0.1 in my completed Notebook 03) |
+| Authentication | Hugging Face CLI, locally saved credentials |
+| Version control | Git / GitHub |
+
+### Reproduce the local setup (Windows PowerShell)
+
+```powershell
+git clone https://github.com/Harjotsingh0311/flyrank-ml-internship.git
+cd flyrank-ml-internship
+uv python install 3.13
+uv venv --python 3.13
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt ipykernel
+.\.venv\Scripts\python.exe -m ipykernel install --user --name flyrank-ml --display-name "Python 3.13 (FlyRank ML)"
+code .
+```
+
+Select the project kernel in VS Code, run the notebooks in order, and save their outputs. For Notebook 03, request the gated warehouse access first and authenticate with `.\.venv\Scripts\hf.exe auth login`. Do not hardcode tokens or download the full warehouse into the repository.
+
+### Introductory notebook progress
+
+| Notebook | Local work | Purpose |
+|---|---|---|
+| [01 — First look and discovery](notebooks/01_first_look_and_discovery.ipynb) | Completed locally | Reference pipeline, ranking metrics and a content-type CTR discovery |
+| [02 — First readable model](notebooks/02_your_first_readable_model.ipynb) | Completed locally | Hand rule, decision-tree depth and feature experiments, leakage and grouped validation |
+| [03 — Full warehouse release](notebooks/03_working_with_the_full_release.ipynb) | Completed locally (early Week 3 practice) | Authenticated remote SQL, temporal features, and Random Forest evaluation |
+
+The completion status above refers to local execution; the executed notebook files must also be committed and visible on GitHub for submission. Weekly assignment skeletons under `work/notebooks/` and the capstone remain separate deliverables.
+
+### Preliminary findings from Notebook 03
+
+The executed notebook verified 78,835,655 daily performance records, 104 clients, and 519,606 content items, with panel dates from 2025-01-27 to 2026-06-30. The 90-day experimental cohort contained 81,443 pages.
+
+| Experiment | ROC AUC | Average precision | Precision@50 | Overlapping clients |
+|---|---:|---:|---:|---:|
+| 60-day, grouped | 0.5638 | 0.6139 | 0.64 | 0 |
+| 90-day, grouped | 0.5810 | 0.6235 | 0.76 | 0 |
+| 90-day, random | 0.6360 | 0.7714 | 1.00 | 37 |
+
+The two grouped models used the same cohort and split (11 held-out clients). The additional history and engineered features improved average precision by 0.0096 on this split. The random split was more optimistic and shared clients between training and testing; it is not evidence of unseen-client generalization. These are observational results from one snapshot and split, not causal claims or a sealed deployment evaluation. Query-level features were used descriptively, not as predictors.
+
+### Setup submission
+
+- [x] Create public repository and local development environment.
+- [x] Execute introductory Notebooks 01 and 02 and attempt their exercises locally.
+- [x] Request Hugging Face access and execute Notebook 03 locally (ahead of the setup requirement).
+- [ ] Commit and push the executed notebooks with their outputs.
+- [ ] Verify public GitHub notebook rendering and submit the repository URL on the Setup assignment card.
+
+All later assignments and the capstone follow the official schedule below. The reference pipeline remains the comparison baseline; private warehouse data and credentials stay outside Git.
+
+---
+
 ## Quickstart — first win in 2 minutes
 
 The fastest path is Google Colab (one click, zero install). Open Notebook 1 and run all cells:
